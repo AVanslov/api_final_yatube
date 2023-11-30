@@ -74,15 +74,13 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
 
-# class FollowViewSet(viewsets.ModelViewSet):
-class FollowViewSet(mixins.CreateModelMixin,
-                    mixins.ListModelMixin,
-                    viewsets.GenericViewSet):
+class FollowViewSet(viewsets.ModelViewSet):
     """
     Возвращает все подписки пользователя, сделавшего запрос.
     Оформляет подписку от имени пользователя, который сделал запрос,
     на пользователя, переданного в теле запроса.
     """
+
     serializer_class = FollowSerializer
     permission_classes = (
         IsAuthenticated,
