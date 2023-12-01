@@ -4,7 +4,8 @@ from rest_framework import permissions
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Проверка на предоставление разрешения
-    на редактирование только автору.
+    на просмотр всем пользователям,
+    на редактирование или удаление только автору.
     """
 
     def has_object_permission(self, request, view, obj):

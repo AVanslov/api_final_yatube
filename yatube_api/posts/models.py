@@ -50,7 +50,7 @@ class Post(models.Model):
         )
 
     def __str__(self):
-        return self.title[:NUMBER_OF_VISIBLE_CHARACTERS]
+        return self.text[:NUMBER_OF_VISIBLE_CHARACTERS]
 
 
 class Comment(models.Model):
@@ -96,4 +96,4 @@ class Follow(models.Model):
         ]
 
     def __str__(self):
-        return self.user[:NUMBER_OF_VISIBLE_CHARACTERS]
+        return f'follower:{self.user}, following:{self.following}'
