@@ -15,11 +15,7 @@ class Group(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return (
-            self.title[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.slug[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.description[:NUMBER_OF_VISIBLE_CHARACTERS],
-        )
+        return self.title[:NUMBER_OF_VISIBLE_CHARACTERS]
 
 
 class Post(models.Model):
@@ -46,15 +42,15 @@ class Post(models.Model):
         null=True,
     )
 
-    def __str__(self):
-        return (
-            self.author[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.title[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.text[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.pub_date[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.image[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.group[:NUMBER_OF_VISIBLE_CHARACTERS],
+    class Meta:
+        ordering = (
+            'group',
+            'pub_date',
+            'author__username',
         )
+
+    def __str__(self):
+        return self.title[:NUMBER_OF_VISIBLE_CHARACTERS]
 
 
 class Comment(models.Model):
@@ -76,12 +72,7 @@ class Comment(models.Model):
     )
 
     def __str__(self):
-        return (
-            self.author[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.text[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.created[:NUMBER_OF_VISIBLE_CHARACTERS],
-            self.post[:NUMBER_OF_VISIBLE_CHARACTERS],
-        )
+        return self.text[:NUMBER_OF_VISIBLE_CHARACTERS]
 
 
 class Follow(models.Model):
@@ -95,3 +86,14 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'following'],
+                name='unique_subscriber_author_pair'
+            )
+        ]
+
+    def __str__(self):
+        return self.user[:NUMBER_OF_VISIBLE_CHARACTERS]

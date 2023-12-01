@@ -13,7 +13,15 @@ from posts.models import (
 
 
 class PostSerializer(serializers.ModelSerializer):
-    """Выводит список постов."""
+    """
+    Показывает список всех публикаций.
+    При указании параметров limit и offset
+    показывет все публикации с пагинацией.
+    Показывает отдельную публикацию и
+    позволяет редактировать или удалять публикацию её автору.
+    Добавляет новую публикацию в коллекцию пользователя,
+    который сделал запрос.
+    """
 
     author = SlugRelatedField(
         slug_field='username',
@@ -26,7 +34,13 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    """Выводит список комментариев."""
+    """
+    Показывает все комментарии публикации.
+    Показывает конкретный комментарий.
+    Добавляет новый комментарий от имени
+    авторизованного пользователя.
+    Позволяет редактировать или удалять комментарий её автору.
+    """
 
     author = serializers.SlugRelatedField(
         read_only=True,
@@ -40,7 +54,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    """Выводит список групп."""
+    """
+    Показывает список всех доступных сообществ.
+    Показывает информацию о конкретном сообществе.
+    """
 
     class Meta:
         model = Group
@@ -48,7 +65,15 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
-    """Выводит список подписчиков."""
+    """
+    Показывает список всех подписок пользователя,
+    который сделал запрос.
+    Оформляет подписку от имени пользователя,
+    который сделал запрос, на пользователя,
+    который передан в теле запроса.
+    Запросы разрешены только
+    авторизированным пользователям.
+    """
 
     user = serializers.SlugRelatedField(
         read_only=True,
@@ -71,9 +96,9 @@ class FollowSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def validate(self, data):
+    def validate_following(self, data):
         request = self.context.get('request')
-        if request.user == data['following']:
+        if request.user == data:
             raise serializers.ValidationError(
                 'Вы не можете подписаться на себя.'
             )
